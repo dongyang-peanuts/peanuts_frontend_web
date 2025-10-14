@@ -19,6 +19,7 @@ const AllMonitoringView = ({ navigate }: PropsType) => {
     lat: 37.5665,
     lng: 126.978,
   };
+
   return (
     <div className="bg-[#F6F7FB] min-h-screen">
       <Header />

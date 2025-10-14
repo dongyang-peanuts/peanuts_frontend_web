@@ -1,8 +1,9 @@
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import MonitoringDetailView from "./MonitoringDetailView";
 import axios from "axios";
 
 const MonitoringDetailContainer = () => {
+  const ws = useRef<WebSocket | null>(null);
   const date = new Date();
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState();
@@ -10,7 +11,7 @@ const MonitoringDetailContainer = () => {
 
   useEffect(() => {
     axios
-      .get(`/admin/users/17`)
+      .get(`/admin/users/14`)
       .then((res) => {
         console.log(res.data);
         setData(res.data);
@@ -20,7 +21,7 @@ const MonitoringDetailContainer = () => {
       });
 
     axios
-      .get(`/admin/users/alerts/17`)
+      .get(`/admin/users/alerts/14`)
       .then((res) => {
         setHistory(res.data);
       })

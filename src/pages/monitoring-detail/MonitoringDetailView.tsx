@@ -6,6 +6,7 @@ import Pagination from "@/components/PageNation";
 import ArrowLeft from "@/assets/icons/ArrowLeftBlack.png";
 import ArrowRight from "@/assets/icons/ArrowRightBlack.png";
 import { getHistory } from "@/models/history";
+import VideoStream from "@/components/VideoStream";
 
 interface PropsType {
   date: Date;
@@ -20,7 +21,7 @@ const MonitoringDetailView = ({ date, data, history }: PropsType) => {
       <BottomHeader page="all" />
       <div className="w-[1116px] m-auto">
         <div className="flex mt-[47px]">
-          <div className="w-[546px] h-[404px] bg-black"></div>
+          <VideoStream />
           <div className="ml-6">
             <div className="flex items-center w-[241px] h-6 mb-[21px] text-xl font-bold">
               <img className="w-6" src={ArrowLeft} />
