@@ -7,6 +7,7 @@ import ArrowLeft from "@/assets/icons/arrowLeft.png";
 import { useEffect, useState } from "react";
 
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import useAlertSocket from "@/hook/useAlertSocket";
 
 interface PropsType {
   navigate: (address: string) => void;
@@ -14,6 +15,7 @@ interface PropsType {
 
 const AllMonitoringView = ({ navigate }: PropsType) => {
   const [visible, setVisible] = useState<boolean>(false);
+  useAlertSocket();
 
   const markerPosition = {
     lat: 37.5665,
