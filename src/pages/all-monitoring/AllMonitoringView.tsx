@@ -5,6 +5,7 @@ import img from "@/assets/img/image (2).png";
 import ArrowRight from "@/assets/icons/arrowRight.png";
 import ArrowLeft from "@/assets/icons/arrowLeft.png";
 import { useEffect, useState } from "react";
+import VideoStream from "@/components/VideoStream";
 
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import useAlertSocket from "@/hook/useAlertSocket";
@@ -53,7 +54,10 @@ const AllMonitoringView = ({ navigate }: PropsType) => {
             }}
             className="flex justify-between w-[974px] mx-4"
           >
-            <img className="w-[311px]" src={img} />
+            <div className="w-[311px] h-[191px] bg-white">
+              <VideoStream width={311} height={191} />
+            </div>
+
             <img className="w-[311px]" src={img} />
             <img className="w-[311px]" src={img} />
           </div>

@@ -16,7 +16,11 @@ function base64ToBlob(b64: string, mime = "image/jpeg") {
   return new Blob([bytes], { type: mime });
 }
 
-export default function CctvWeb() {
+interface CctvProps {
+  width: number;
+  height: number;
+}
+export default function CctvWeb({ width, height }: CctvProps) {
   const [imgSrc, setImgSrc] = useState<string>("");
   const prevUrlRef = useRef<string | null>(null);
 
@@ -86,12 +90,12 @@ export default function CctvWeb() {
   }, []);
 
   return (
-    <div style={{ width: 546, height: 404, border: "1px solid #000" }}>
+    <div className="bg-white">
       {imgSrc ? (
         <img
           src={imgSrc}
-          width={546}
-          height={404}
+          width={width}
+          height={height}
           alt="CCTV"
           style={{ objectFit: "contain", width: "100%", height: "100%" }}
           onError={(e) => {

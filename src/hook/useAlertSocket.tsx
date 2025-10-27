@@ -3,7 +3,6 @@ import { showPopupNotification } from "@/utils/showPopupNotification";
 
 const useAlertSocket = () => {
   const socketRef = useRef<WebSocket | null>(null);
-  const reconnectDelay = 3000; // 3초 후 재연결
 
   useEffect(() => {
     const connect = () => {
@@ -22,16 +21,6 @@ const useAlertSocket = () => {
         } catch (err) {
           console.error("메시지 파싱 실패:", err);
         }
-      };
-
-      ws.onclose = (e) => {
-        console.warn("WebSocket 연결 종료", e.reason);
-        socketRef.current = null;
-        // 자동 재연결 시도
-        setTimeout(() => {
-          console.log("WebSocket 재연결 시도");
-          connect();
-        }, reconnectDelay);
       };
 
       ws.onerror = (err) => {

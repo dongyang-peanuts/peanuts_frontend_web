@@ -11,7 +11,7 @@ const MonitoringDetailContainer = () => {
 
   useEffect(() => {
     axios
-      .get(`/admin/users/14`)
+      .get(`/admin/users/22`)
       .then((res) => {
         console.log(res.data);
         setData(res.data);
@@ -21,7 +21,7 @@ const MonitoringDetailContainer = () => {
       });
 
     axios
-      .get(`/admin/users/alerts/14`)
+      .get(`/admin/users/alerts/22`)
       .then((res) => {
         setHistory(res.data);
       })

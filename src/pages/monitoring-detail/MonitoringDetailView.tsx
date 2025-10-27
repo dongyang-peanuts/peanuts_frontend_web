@@ -21,7 +21,17 @@ const MonitoringDetailView = ({ date, data, history }: PropsType) => {
       <BottomHeader page="all" />
       <div className="w-[1116px] m-auto">
         <div className="flex mt-[47px]">
-          <VideoStream />
+          <div
+            style={{
+              width: "546px",
+              height: "404px",
+              border: "1px solid #000",
+              backgroundColor: "white",
+            }}
+          >
+            <VideoStream width={546} height={404} />
+          </div>
+
           <div className="ml-6">
             <div className="flex items-center w-[241px] h-6 mb-[21px] text-xl font-bold">
               <img className="w-6" src={ArrowLeft} />
@@ -37,7 +47,7 @@ const MonitoringDetailView = ({ date, data, history }: PropsType) => {
               <img className="w-6" src={ArrowRight} />
             </div>
             <div className="h-[359px] overflow-auto">
-              {history.length ? (
+              {history?.length > 0 ? (
                 history.map((item) => <HistoryItem data={item} />)
               ) : (
                 <div>히스토리 값이 존재하지 않습니다</div>
