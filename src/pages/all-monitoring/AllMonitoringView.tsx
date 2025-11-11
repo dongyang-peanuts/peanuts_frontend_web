@@ -9,6 +9,7 @@ import VideoStream from "@/components/VideoStream";
 
 import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import useAlertSocket from "@/hook/useAlertSocket";
+import { playFallAlarm, stopFallAlarm } from "@/hook/playFallAlarm";
 
 interface PropsType {
   navigate: (address: string) => void;
@@ -16,12 +17,27 @@ interface PropsType {
 
 const AllMonitoringView = ({ navigate }: PropsType) => {
   const [visible, setVisible] = useState<boolean>(false);
-  useAlertSocket();
+  const [showMarker, setShowMarker] = useState<boolean>(false);
+  const [center, setCenter] = useState({
+    lat: 37.450701,
+    lng: 127.570667,
+  });
 
   const markerPosition = {
     lat: 37.5665,
     lng: 126.978,
   };
+
+  useAlertSocket((data: any) => {
+    if (data.fall) {
+      setShowMarker(true);
+      setCenter(markerPosition);
+      playFallAlarm();
+    } else {
+      setShowMarker(false);
+      stopFallAlarm();
+    }
+  });
 
   return (
     <div className="bg-[#F6F7FB] min-h-screen">
@@ -34,15 +50,23 @@ const AllMonitoringView = ({ navigate }: PropsType) => {
           level={10}
           className="h-real-screen"
         >
-          <MapMarker
-            position={markerPosition}
-            onClick={() => setVisible(!visible)}
-          />
-          {visible ? (
-            <CustomOverlayMap position={markerPosition} xAnchor={0} yAnchor={1}>
-              <InfoModal />
-            </CustomOverlayMap>
-          ) : null}
+          {showMarker && (
+            <>
+              <MapMarker
+                position={markerPosition}
+                onClick={() => setVisible((prev) => !prev)}
+              />
+              {visible && (
+                <CustomOverlayMap
+                  position={markerPosition}
+                  xAnchor={0}
+                  yAnchor={1}
+                >
+                  <InfoModal />
+                </CustomOverlayMap>
+              )}
+            </>
+          )}
         </Map>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center">
           <div className="w-[37px] h-[65px] bg-[#3a3a3a] rounded-lg flex items-center">

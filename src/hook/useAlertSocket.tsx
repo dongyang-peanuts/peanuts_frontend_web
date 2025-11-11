@@ -1,11 +1,20 @@
 import { useEffect, useRef } from "react";
 import { showPopupNotification } from "@/utils/showPopupNotification";
 
-const useAlertSocket = () => {
+type AlertCallback = (data: any) => void;
+
+const useAlertSocket = (onAlert?: AlertCallback) => {
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     const connect = () => {
+      if (
+        socketRef.current &&
+        socketRef.current.readyState === WebSocket.OPEN
+      ) {
+        socketRef.current.close();
+      }
+
       const ws = new WebSocket("ws://kongback.kro.kr:8080/ws/alert");
       socketRef.current = ws;
 
@@ -18,6 +27,9 @@ const useAlertSocket = () => {
           const data = JSON.parse(e.data);
           console.log("알림 수신:", data);
           showPopupNotification(data);
+          if (onAlert) {
+            onAlert(data);
+          }
         } catch (err) {
           console.error("메시지 파싱 실패:", err);
         }
@@ -35,7 +47,7 @@ const useAlertSocket = () => {
       socketRef.current?.close();
       socketRef.current = null;
     };
-  }, []);
+  }, [onAlert]);
 };
 
 export default useAlertSocket;

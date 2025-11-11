@@ -7,6 +7,7 @@ import ArrowLeft from "@/assets/icons/ArrowLeftBlack.png";
 import ArrowRight from "@/assets/icons/ArrowRightBlack.png";
 import { getHistory } from "@/models/history";
 import VideoStream from "@/components/VideoStream";
+import { useEffect } from "react";
 
 interface PropsType {
   date: Date;
