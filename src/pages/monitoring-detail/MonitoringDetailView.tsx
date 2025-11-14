@@ -35,7 +35,6 @@ const MonitoringDetailView = ({ date, data, history }: PropsType) => {
 
           <div className="ml-6">
             <div className="flex items-center w-[241px] h-6 mb-[21px] text-xl font-bold">
-              <img className="w-6" src={ArrowLeft} />
               <div className="mx-[23px]">
                 {date.getFullYear() +
                   "년 " +
@@ -44,8 +43,6 @@ const MonitoringDetailView = ({ date, data, history }: PropsType) => {
                   date.getDay() +
                   "일 "}
               </div>
-              <input type="date" className="hidden" />
-              <img className="w-6" src={ArrowRight} />
             </div>
             <div className="h-[359px] overflow-auto">
               {history?.length > 0 ? (

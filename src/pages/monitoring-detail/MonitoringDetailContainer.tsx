@@ -31,7 +31,7 @@ const MonitoringDetailContainer = () => {
         console.log(err);
       });
 
-    const wsUrl = `ws://kongback.kro.kr:8080/user/alerts/${USER_KEY}`;
+    const wsUrl = `ws://kongback.kro.kr:8080/user/alert`;
     console.log("alerts WebSocket 연결 시도:", wsUrl);
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;

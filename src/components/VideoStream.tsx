@@ -24,48 +24,12 @@ interface CctvProps {
 export default function CctvWeb({ width, height }: CctvProps) {
   const [imgSrc, setImgSrc] = useState<string>("");
   const [isConnected, setIsConnected] = useState(false);
-
   const prevUrlRef = useRef<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimerRef = useRef<number | null>(null);
-  const unmountedRef = useRef(false);
 
   useEffect(() => {
-    const url = "ws://172.20.10.2:8765/monitor";
-
-    const clearImageUrl = () => {
-      if (prevUrlRef.current) {
-        URL.revokeObjectURL(prevUrlRef.current);
-        prevUrlRef.current = null;
-      }
-      setImgSrc("");
-    };
-
-    const scheduleReconnect = () => {
-      if (unmountedRef.current) return;
-
-      // 이미 예약된 재연결 시도가 있으면 또 안 잡음
-      if (reconnectTimerRef.current !== null) return;
-
-      console.warn("⏳ 2000ms 후 WebSocket 재연결 시도");
-
-      reconnectTimerRef.current = window.setTimeout(() => {
-        reconnectTimerRef.current = null;
-        connect();
-      }, 2000);
-    };
-
     const connect = () => {
-      // 이미 연결되어 있거나 연결 중이면 다시 만들지 않음
-      if (
-        wsRef.current &&
-        (wsRef.current.readyState === WebSocket.OPEN ||
-          wsRef.current.readyState === WebSocket.CONNECTING)
-      ) {
-        return;
-      }
-
-      console.log("🔌 WebSocket 연결 시도:", url);
+      const url = "ws://172.20.10.2:8765/monitor";
       const ws = new WebSocket(url);
       ws.binaryType = "arraybuffer";
       wsRef.current = ws;
@@ -73,12 +37,6 @@ export default function CctvWeb({ width, height }: CctvProps) {
       ws.onopen = () => {
         console.log("✅ WS connected:", url);
         setIsConnected(true);
-
-        // 연결 성공했으니 재연결 타이머는 필요 없음
-        if (reconnectTimerRef.current !== null) {
-          clearTimeout(reconnectTimerRef.current);
-          reconnectTimerRef.current = null;
-        }
       };
 
       ws.onmessage = (e) => {
@@ -125,50 +83,21 @@ export default function CctvWeb({ width, height }: CctvProps) {
         setImgSrc(objUrl);
       };
 
-      ws.onerror = (err) => {
-        console.error("WS error:", err);
-        setIsConnected(false);
-        clearImageUrl();
-
-        // 에러 나면 소켓 닫고 → onclose에서 재연결 시도
-        try {
-          ws.close();
-        } catch (_) {}
-      };
-
+      ws.onerror = (err) => console.error("WS error:", err);
       ws.onclose = (e) => {
         console.warn("⚠️ WS closed:", e);
         setIsConnected(false);
-        clearImageUrl();
-        scheduleReconnect(); // ★ 실패/종료 시에만 재연결 예약
+        setTimeout(connect, 2000); // 재연결 시도
       };
     };
 
-    // 초기 1회 연결 시도
-    connect();
+    // DOM 안정화 후 연결 (React 초기 렌더 끝난 뒤)
+    const timer = setTimeout(connect, 300);
 
     return () => {
-      unmountedRef.current = true;
-
-      if (reconnectTimerRef.current !== null) {
-        clearTimeout(reconnectTimerRef.current);
-      }
-
-      if (wsRef.current) {
-        try {
-          wsRef.current.onopen = null;
-          wsRef.current.onmessage = null;
-          wsRef.current.onerror = null;
-          wsRef.current.onclose = null;
-          wsRef.current.close();
-        } catch (e) {
-          console.warn("WebSocket cleanup error:", e);
-        }
-      }
-
-      if (prevUrlRef.current) {
-        URL.revokeObjectURL(prevUrlRef.current);
-      }
+      clearTimeout(timer);
+      if (wsRef.current) wsRef.current.close();
+      if (prevUrlRef.current) URL.revokeObjectURL(prevUrlRef.current);
     };
   }, []);
 
@@ -191,7 +120,7 @@ export default function CctvWeb({ width, height }: CctvProps) {
         />
       ) : (
         <div style={{ padding: 12 }}>
-          {isConnected ? "📡 영상 수신 중…" : "⏳ 서버 연결 시도 중…"}
+          {isConnected ? "📡 영상 수신 중…" : "⏳ 서버 연결 중…"}
         </div>
       )}
     </div>

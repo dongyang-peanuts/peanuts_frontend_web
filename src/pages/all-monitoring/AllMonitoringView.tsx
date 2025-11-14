@@ -34,7 +34,6 @@ const AllMonitoringView = ({ navigate }: PropsType) => {
       setCenter(markerPosition);
       playFallAlarm();
     } else {
-      setShowMarker(false);
       stopFallAlarm();
     }
   });
